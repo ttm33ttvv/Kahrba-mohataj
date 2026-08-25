@@ -1,0 +1,6 @@
+{
+  "name": "إدارة محطة الكهرباء",
+  "description": "تطبيق شامل لإدارة المحطات الكهربائية الخاصة إدارياً ومالياً ومحاسبياً وتتبع مبيعات وتكلفة الكيلو واط والأرباح والمصاريف والرواتب والوقود والمشتركين",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
