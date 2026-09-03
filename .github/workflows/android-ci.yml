@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
 
     steps:
     - name: Checkout
@@ -28,6 +26,7 @@ jobs:
 
     - name: Install Android commandline tools and SDK
       run: |
+        export ANDROID_SDK_ROOT=${{ runner.temp }}/android-sdk
         sudo apt-get update
         sudo apt-get install -y unzip wget lib32stdc++6 lib32gcc1
         mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
