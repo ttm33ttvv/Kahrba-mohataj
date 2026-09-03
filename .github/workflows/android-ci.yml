@@ -1,18 +1,18 @@
-name: Android CI
+name: Android CI - assembleDebug
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
 
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.MY_PAT }}
@@ -23,18 +23,26 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
 
-    - name: Set up Android SDK
-      uses: google-github-actions/setup-android@v2
-      with:
-        api-level: 36
-        components: |
-          build-tools;36.0.0
-          platforms;android-36
-
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
+    - name: Install Android commandline tools and SDK
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y unzip wget lib32stdc++6 lib32gcc1
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9123335_latest.zip -O cmdline.zip
+        unzip cmdline.zip -d $HOME/cmdline-tools-temp
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
+        mv $HOME/cmdline-tools-temp/cmdline-tools/* $ANDROID_SDK_ROOT/cmdline-tools/latest/
+        export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+        yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses || true
+        sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
     - name: Build Debug APK
+      env:
+        ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+        ANDROID_HOME: ${{ runner.temp }}/android-sdk
       run: ./gradlew clean assembleDebug --stacktrace
 
     - name: Upload Debug APK
