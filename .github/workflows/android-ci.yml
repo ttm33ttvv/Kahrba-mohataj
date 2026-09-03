@@ -28,7 +28,7 @@ jobs:
       run: |
         export ANDROID_SDK_ROOT=${{ runner.temp }}/android-sdk
         sudo apt-get update
-        sudo apt-get install -y unzip wget lib32stdc++6 lib32gcc1
+        sudo apt-get install -y unzip wget lib32stdc++6
         mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-9123335_latest.zip -O cmdline.zip
         unzip cmdline.zip -d $HOME/cmdline-tools-temp
